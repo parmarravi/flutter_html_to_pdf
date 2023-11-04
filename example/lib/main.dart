@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_full_pdf_viewer/flutter_full_pdf_viewer.dart';
 import 'package:flutter_html_to_pdf/flutter_html_to_pdf.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() {
@@ -13,12 +13,14 @@ void main() {
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp();
+
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  String generatedPdfFilePath;
+  String generatedPdfFilePath = "";
 
   @override
   void initState() {
@@ -69,14 +71,19 @@ class _MyAppState extends State<MyApp> {
 
     Directory appDocDir = await getApplicationDocumentsDirectory();
     final targetPath = appDocDir.path;
-    final targetFileName = "example-pdf";
+    final targetFileName = "example-pdfd";
 
-    final generatedPdfFile = await FlutterHtmlToPdf.convertFromHtmlContent(htmlContent, targetPath, targetFileName);
+    final generatedPdfFile = await FlutterHtmlToPdf.convertFromHtmlContent(
+        htmlContent, targetPath, targetFileName);
     generatedPdfFilePath = generatedPdfFile.path;
+
+    print("generatedPdfFilePath ${generatedPdfFilePath}");
   }
 
   @override
   Widget build(BuildContext context) {
+    print("generatedPdfFilePath1 ${generatedPdfFilePath}");
+
     return MaterialApp(
         home: Scaffold(
       appBar: AppBar(),
@@ -86,7 +93,11 @@ class _MyAppState extends State<MyApp> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => PDFViewerScaffold(appBar: AppBar(title: Text("Generated PDF Document")), path: generatedPdfFilePath)),
+              MaterialPageRoute(
+                  builder: (context) => Scaffold(
+                        appBar: AppBar(title: Text("Sampdadlde pdf")),
+                        body: PDFView(filePath: generatedPdfFilePath),
+                      )),
             );
           },
         ),
